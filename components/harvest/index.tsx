@@ -1,23 +1,26 @@
 import { Tabs } from '@mui/material';
 import Tab from '@mui/material/Tab';
 
-import TextField from '@mui/material/TextField';
-import DateRangePicker from '@mui/lab/DateRangePicker';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-
 import { Box } from "@mui/system";
 import axios from "axios"
 import { useEffect, useState, createContext, SetStateAction, useRef } from "react"
 import Report from "../../interfaces/Report"
 import Panel from "../layout/panel";
 import { DateRange } from '@mui/lab/DateRangePicker/RangeTypes';
+import HarvestFilters from './filters';
+import ProductionChart from './charts/production';
 
 type HarvestContextData = {
     item: Report
-    // setItem: (item: SetStateAction<Landingpage>) => void
-    // loading: boolean
-    // setLoading: (loading: boolean) => void
+    filter: Filter
+    setFilter: (filter: SetStateAction<Filter>) => void
+}
+
+type Filter = {
+    start: string
+    end: string
+    orchardId: number[]
+    tab: number
 }
 
 interface TabPanelProps {
@@ -31,21 +34,56 @@ export const HarvestContext = createContext({} as HarvestContextData);
 export default function HarvestProvider() {
     const [loading, setLoading] = useState<boolean>(false);
     const [item, setItem] = useState<Report>({} as Report)
-
-    const [value, setValue] = useState(1);
-    const [valueDate, setValueDate] = useState<DateRange<Date | null>>([null, null]);
-
-    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-        setValue(newValue);
-    };
+    const [filter, setFilter] = useState<Filter>({ tab: 0 } as Filter);
 
     useEffect(() => {
-        setLoading(true)
+        setItem({
+            totalProduction: 236,
+            totalCost: 403.255127583846,
+            categories: [
+                {
+                    id: "1ba383ea-e9f0-4c35-8f01-ed88c7eeaf2a",
+                    name: "Taihape Woods 1",
+                    production: 24,
+                    cost: 67.209187930641
+                },
+                {
+                    id: "34a76a76-23c6-40dd-b8c7-b822063f17b1",
+                    name: "Wanaka Meadows",
+                    production: 32,
+                    cost: 67.209187930641
+                },
+                {
+                    id: "4eb58296-5eda-49a1-9831-5838e52bc4dd",
+                    name: "Taihape Woods 2",
+                    production: 44,
+                    cost: 67.209187930641
+                },
+                {
+                    id: "7ba12acf-95b3-4c8d-80ca-4c2b562971cc",
+                    name: "Gore's River",
+                    production: 48,
+                    cost: 67.209187930641
+                },
+                {
+                    id: "b6dbb181-48ff-4ff7-b395-7fa8dcc146c4",
+                    name: "Raglan's Haven",
+                    production: 48,
+                    cost: 67.209187930641
+                },
+                {
+                    id: "ef71e690-4bbb-4684-9ebb-4b8fcd23eceb",
+                    name: "Oamaru Hills",
+                    production: 40,
+                    cost: 67.209187930641
+                }
+            ]
+        });
+
         // axios.get(process.env.API_LINK + `/landingpage/${item_id}`).then(({ data }) => {
         //     setLoading(false)
         //     if (data.success)
         //         setItem(data.result)
-
         // }).catch(e => setLoading(false))
     }, [])
 
@@ -70,41 +108,24 @@ export default function HarvestProvider() {
     }
 
     return (
-        <HarvestContext.Provider value={{ item }}>
+        <HarvestContext.Provider value={{ item, filter, setFilter }}>
             <Panel>
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <DateRangePicker
-                        startText="Start"
-                        endText="End"
-                        value={valueDate}
-                        onChange={(newValueDate) => {
-                            setValueDate(newValueDate);
-                        }}
-                        renderInput={(startProps, endProps) => (
-                            <>
-                                <TextField size={'small'} {...startProps} />
-                                <Box sx={{ mx: 2 }}> to </Box>
-                                <TextField size={'small'} {...endProps} />
-                            </>
-                        )}
-                    />
-                </LocalizationProvider>
+                <HarvestFilters />
             </Panel>
             <Panel title={"percentage"}>
                 <Tabs
-                    value={value}
-                    onChange={handleChange}
-                    aria-label="basic tabs example"
+                    value={filter.tab}
+                    onChange={(e, newValue) => setFilter(prevstate => ({ ...prevstate, tab: newValue }))}
                     textColor="primary"
                     indicatorColor="secondary"
                 >
                     <Tab label="Varieties" />
                     <Tab label="Orchards" />
                 </Tabs>
-                <TabPanel value={value} index={1}>
-                    Varieties
+                <TabPanel value={filter.tab} index={0}>
+                    <ProductionChart />
                 </TabPanel>
-                <TabPanel value={value} index={2}>
+                <TabPanel value={filter.tab} index={1}>
                     Orchards
                 </TabPanel>
             </Panel>

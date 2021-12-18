@@ -21,7 +21,7 @@ a {
   box-sizing: border-box;
 }
 
-.MuiButtonBase-root {
+/* .MuiButtonBase-root {
   padding: 9px 0;
   margin-right: 25px;
   font-size: 16px;
@@ -35,5 +35,4 @@ a {
 
 .css-1jg0vko-MuiTabs-indicator {
   height: 3px;
-  /* bottom: unset; */
-}
+} */
