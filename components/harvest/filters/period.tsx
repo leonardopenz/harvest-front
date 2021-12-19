@@ -10,9 +10,8 @@ import moment from 'moment';
 export default function PeriodFilter() {
     const dateFormat = "YYYY-MM-DDT00:00Z";
     const { item, filter, setFilter } = useContext(HarvestContext);
-    const [value, setValue] = useState<DateRange<string>>([moment().subtract(1, 'months').format(dateFormat), moment().format(dateFormat)]);
-
-    useEffect(() => { console.log(filter) }, [filter])
+    // const [value, setValue] = useState<DateRange<string>>([moment().subtract(1, 'months').format(dateFormat), moment().format(dateFormat)]);
+    const [value, setValue] = useState<DateRange<string>>([filter.start, filter.end]);
 
     return (
         <>

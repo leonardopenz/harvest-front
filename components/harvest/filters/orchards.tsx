@@ -1,11 +1,11 @@
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Checkbox } from '@mui/material';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
-import axios from 'axios';
+import { HarvestContext } from "..";
 
 function sleep(delay = 0) {
     return new Promise((resolve) => {
@@ -22,6 +22,7 @@ type Orchard = {
 }
 
 export default function OrchardsFilter() {
+    const { setFilter } = useContext(HarvestContext);
     const [open, setOpen] = useState(false);
     const [options, setOptions] = useState<Orchard[]>([]);
     const loading = open && options.length === 0;
@@ -60,6 +61,7 @@ export default function OrchardsFilter() {
             open={open}
             onOpen={() => { setOpen(true); }}
             onClose={() => { setOpen(false); }}
+            onChange={(e, data) => setFilter(prevstate => ({ ...prevstate, orchards: data.map((x) => { return x.id }) }))}
             isOptionEqualToValue={(option, value) => option.name === value.name}
             getOptionLabel={(option) => option.name}
             options={options}

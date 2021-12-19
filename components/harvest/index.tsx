@@ -8,17 +8,13 @@ import Report from "../../interfaces/Report"
 import Panel from "../layout/panel";
 import HarvestFilters from './filters';
 import TabContent from "../layout/tabContent";
+import { ChartType, ReportTab } from "../../interfaces/Report";
+import moment from "moment";
 
-const ProductionChart = dynamic(
-    () => import("./charts/production"),
+const Chart = dynamic(
+    () => import("./charts/chart"),
     { ssr: false }
 );
-
-const CostChart = dynamic(
-    () => import("./charts/cost"),
-    { ssr: false }
-);
-
 
 type HarvestContextData = {
     item: Report
@@ -29,7 +25,7 @@ type HarvestContextData = {
 type Filter = {
     start: string
     end: string
-    orchardId: number[]
+    orchards: string[]
     tab: number
 }
 
@@ -42,9 +38,10 @@ interface TabPanelProps {
 export const HarvestContext = createContext({} as HarvestContextData);
 
 export default function HarvestProvider() {
+    const dateFormat = "YYYY-MM-DDT00:00Z";
     const [loading, setLoading] = useState<boolean>(false);
     const [item, setItem] = useState<Report>({} as Report)
-    const [filter, setFilter] = useState<Filter>({ tab: 0 } as Filter);
+    const [filter, setFilter] = useState<Filter>({ tab: 0, start: moment().subtract(1, 'months').format(dateFormat), end: moment().format(dateFormat) } as Filter);
 
     useEffect(() => {
         setItem({
@@ -89,13 +86,18 @@ export default function HarvestProvider() {
                 }
             ]
         });
-
-        // axios.get(process.env.API_LINK + `/landingpage/${item_id}`).then(({ data }) => {
-        //     setLoading(false)
-        //     if (data.success)
-        //         setItem(data.result)
-        // }).catch(e => setLoading(false))
     }, [])
+
+    useEffect(() => { console.log("filter", filter) }, [filter])
+
+    function getReport() {
+        setLoading(true)
+        let orchards = filter.orchards?.join(',') || '';
+        axios.get('localhost:5001/api/orchard', { params: { start: filter.start, end: filter.end, tab: filter.tab, orchards } }).then(({ data }) => {
+            setLoading(false);
+            setItem(data);
+        }).catch(e => { setLoading(false) });
+    }
 
     function TabPanel(props: TabPanelProps) {
         const { children, value, index, ...other } = props;
@@ -135,15 +137,22 @@ export default function HarvestProvider() {
                 <TabPanel value={filter.tab} index={0}>
                     <Grid container spacing={2}>
                         <Grid item xs={12} md={6}>
-                            <TabContent chart={<ProductionChart />} title={"production"} total={item.totalProduction + " bins"} />
+                            <TabContent chart={<Chart tab={ReportTab.varieties} type={ChartType.production} />} title={"production"} total={item.totalProduction + " bins"} />
                         </Grid>
                         <Grid item xs={12} md={6}>
-                            <TabContent chart={<CostChart />} title={"cost"} total={"$ " + item.totalCost} />
+                            <TabContent chart={<Chart tab={ReportTab.varieties} type={ChartType.cost} />} title={"cost"} total={"$ " + item.totalCost} />
                         </Grid>
                     </Grid>
                 </TabPanel>
                 <TabPanel value={filter.tab} index={1}>
-                    Orchards
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={6}>
+                            <TabContent chart={<Chart tab={ReportTab.orchards} type={ChartType.production} />} title={"production"} total={item.totalProduction + " bins"} />
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <TabContent chart={<Chart tab={ReportTab.orchards} type={ChartType.cost} />} title={"cost"} total={"$ " + item.totalCost} />
+                        </Grid>
+                    </Grid>
                 </TabPanel>
             </Panel>
         </HarvestContext.Provider>
