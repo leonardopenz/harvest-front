@@ -8,7 +8,7 @@
 }
 
 .header .content {
-    padding: 0 24px;
+    padding: 0 40px;
     width: 100%;
     margin-left: auto;
     box-sizing: border-box;
@@ -26,22 +26,40 @@
 .panel {
     box-shadow: 0px 2px 6px 0px #00000026;
     background-color: #fff;
-    padding: 20px;
+    padding: 30px;
     border-radius: 4px;
     margin-bottom: 15px;
 }
 
-.panel .title {
+.panel>.title {
     font-size: 24px;
     font-weight: 600;
     text-transform: uppercase;
     padding-bottom: 15px;
 }
 
-.filters {
+.panel .filters {
     display: flex;
 }
 
-.filters .item {
+.panel .filters .item {
     margin-right: 30px;
+}
+
+.panel .tab_content {
+    text-align: center;
+}
+
+.panel .tab_content .title {
+    color: #828282;
+    text-transform: capitalize;
+    font-size: 13px;
+    margin-top: 10px;
+}
+
+.panel .tab_content .total {
+    color: #4F4F4F;
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 10px;
 }

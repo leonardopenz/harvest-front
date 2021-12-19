@@ -1,14 +1,24 @@
-import { Tabs } from '@mui/material';
-import Tab from '@mui/material/Tab';
-
-import { Box } from "@mui/system";
+import dynamic from "next/dynamic";
 import axios from "axios"
+import { Grid, Tabs } from '@mui/material';
+import Tab from '@mui/material/Tab';
+import { Box } from "@mui/system";
 import { useEffect, useState, createContext, SetStateAction, useRef } from "react"
 import Report from "../../interfaces/Report"
 import Panel from "../layout/panel";
-import { DateRange } from '@mui/lab/DateRangePicker/RangeTypes';
 import HarvestFilters from './filters';
-import ProductionChart from './charts/production';
+import TabContent from "../layout/tabContent";
+
+const ProductionChart = dynamic(
+    () => import("./charts/production"),
+    { ssr: false }
+);
+
+const CostChart = dynamic(
+    () => import("./charts/cost"),
+    { ssr: false }
+);
+
 
 type HarvestContextData = {
     item: Report
@@ -39,43 +49,43 @@ export default function HarvestProvider() {
     useEffect(() => {
         setItem({
             totalProduction: 236,
-            totalCost: 403.255127583846,
+            totalCost: 403.255,
             categories: [
                 {
                     id: "1ba383ea-e9f0-4c35-8f01-ed88c7eeaf2a",
                     name: "Taihape Woods 1",
                     production: 24,
-                    cost: 67.209187930641
+                    cost: 67.209
                 },
                 {
                     id: "34a76a76-23c6-40dd-b8c7-b822063f17b1",
                     name: "Wanaka Meadows",
                     production: 32,
-                    cost: 67.209187930641
+                    cost: 67.209
                 },
                 {
                     id: "4eb58296-5eda-49a1-9831-5838e52bc4dd",
                     name: "Taihape Woods 2",
                     production: 44,
-                    cost: 67.209187930641
+                    cost: 67.209
                 },
                 {
                     id: "7ba12acf-95b3-4c8d-80ca-4c2b562971cc",
                     name: "Gore's River",
                     production: 48,
-                    cost: 67.209187930641
+                    cost: 67.209
                 },
                 {
                     id: "b6dbb181-48ff-4ff7-b395-7fa8dcc146c4",
                     name: "Raglan's Haven",
                     production: 48,
-                    cost: 67.209187930641
+                    cost: 67.209
                 },
                 {
                     id: "ef71e690-4bbb-4684-9ebb-4b8fcd23eceb",
                     name: "Oamaru Hills",
                     production: 40,
-                    cost: 67.209187930641
+                    cost: 67.209
                 }
             ]
         });
@@ -123,7 +133,14 @@ export default function HarvestProvider() {
                     <Tab label="Orchards" />
                 </Tabs>
                 <TabPanel value={filter.tab} index={0}>
-                    <ProductionChart />
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={6}>
+                            <TabContent chart={<ProductionChart />} title={"production"} total={item.totalProduction + " bins"} />
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <TabContent chart={<CostChart />} title={"cost"} total={"$ " + item.totalCost} />
+                        </Grid>
+                    </Grid>
                 </TabPanel>
                 <TabPanel value={filter.tab} index={1}>
                     Orchards
