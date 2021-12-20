@@ -1,15 +1,19 @@
 import dynamic from "next/dynamic";
 import axios from "axios"
-import { Grid, Tabs } from '@mui/material';
-import Tab from '@mui/material/Tab';
+// import { Tabs } from '@mui/material';
+// import Tab from '@mui/material/Tab';
 import { Box } from "@mui/system";
 import { useEffect, useState, createContext, SetStateAction, useRef } from "react"
 import Report from "../../interfaces/Report"
 import Panel from "../layout/panel";
 import HarvestFilters from './filters';
-import TabContent from "../layout/tabContent";
-import { ChartType, ReportTab } from "../../interfaces/Report";
+import { ReportTab } from "../../interfaces/Report";
 import moment from "moment";
+
+import Tab from '@mui/material/Tab';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
 
 const Chart = dynamic(
     () => import("./charts/chart"),
@@ -26,7 +30,7 @@ type Filter = {
     start: string
     end: string
     orchards: string[]
-    tab: number
+    tab: string
 }
 
 interface TabPanelProps {
@@ -41,7 +45,7 @@ export default function HarvestProvider() {
     const dateFormat = "YYYY-MM-DDT00:00Z";
     const [loading, setLoading] = useState<boolean>(false);
     const [item, setItem] = useState<Report>({} as Report)
-    const [filter, setFilter] = useState<Filter>({ tab: 0, start: moment().subtract(1, 'months').format(dateFormat), end: moment().format(dateFormat) } as Filter);
+    const [filter, setFilter] = useState<Filter>({ tab: '0', start: moment().subtract(1, 'months').format(dateFormat), end: moment().format(dateFormat) } as Filter);
 
     useEffect(() => {
         setItem({
@@ -86,9 +90,9 @@ export default function HarvestProvider() {
                 }
             ]
         });
-    }, [])
+    }, [filter])
 
-    useEffect(() => { console.log("filter", filter) }, [filter])
+    // useEffect(() => { console.log("filter", filter) }, [filter])
 
     function getReport() {
         setLoading(true)
@@ -99,33 +103,26 @@ export default function HarvestProvider() {
         }).catch(e => { setLoading(false) });
     }
 
-    function TabPanel(props: TabPanelProps) {
-        const { children, value, index, ...other } = props;
-
-        return (
-            <div
-                role="tabpanel"
-                hidden={value !== index}
-                id={`simple-tabpanel-${index}`}
-                aria-labelledby={`simple-tab-${index}`}
-                {...other}
-            >
-                {value === index && (
-                    <Box sx={{ p: 3 }}>
-                        {children}
-                    </Box>
-                )}
-            </div>
-        );
-    }
-
     return (
         <HarvestContext.Provider value={{ item, filter, setFilter }}>
             <Panel>
                 <HarvestFilters />
             </Panel>
             <Panel title={"percentage"}>
-                <Tabs
+                <TabContext value={filter.tab}>
+                    <TabList
+                        textColor="primary"
+                        indicatorColor="secondary"
+                        onChange={(e, newValue) => setFilter(prevstate => ({ ...prevstate, tab: newValue }))}
+                    >
+                        <Tab label="Varieties" value="0" />
+                        <Tab label="Orchards" value="1" />
+                    </TabList>
+                    <TabPanel value={'0'}><Chart tab={ReportTab.varieties} /></TabPanel>
+                    <TabPanel value={'1'}><Chart tab={ReportTab.orchards} /></TabPanel>
+                </TabContext>
+
+                {/* <Tabs
                     value={filter.tab}
                     onChange={(e, newValue) => setFilter(prevstate => ({ ...prevstate, tab: newValue }))}
                     textColor="primary"
@@ -135,25 +132,11 @@ export default function HarvestProvider() {
                     <Tab label="Orchards" />
                 </Tabs>
                 <TabPanel value={filter.tab} index={0}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} md={6}>
-                            <TabContent chart={<Chart tab={ReportTab.varieties} type={ChartType.production} />} title={"production"} total={item.totalProduction + " bins"} />
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                            <TabContent chart={<Chart tab={ReportTab.varieties} type={ChartType.cost} />} title={"cost"} total={"$ " + item.totalCost} />
-                        </Grid>
-                    </Grid>
+                    <Chart tab={ReportTab.varieties} />
                 </TabPanel>
                 <TabPanel value={filter.tab} index={1}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} md={6}>
-                            <TabContent chart={<Chart tab={ReportTab.orchards} type={ChartType.production} />} title={"production"} total={item.totalProduction + " bins"} />
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                            <TabContent chart={<Chart tab={ReportTab.orchards} type={ChartType.cost} />} title={"cost"} total={"$ " + item.totalCost} />
-                        </Grid>
-                    </Grid>
-                </TabPanel>
+                    <Chart tab={ReportTab.orchards} />
+                </TabPanel> */}
             </Panel>
         </HarvestContext.Provider>
     )

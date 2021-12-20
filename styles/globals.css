@@ -3,6 +3,7 @@
 html,
 body {
   background: #f8f8f8;
+  color: #333333;
   padding: 0;
   margin: 0;
   font-family: 'Lato', sans-serif;
@@ -21,18 +22,31 @@ a {
   box-sizing: border-box;
 }
 
-/* .MuiButtonBase-root {
+.MuiTabs-indicator {
+  height: 3px;
+}
+
+.MuiTab-root {
   padding: 9px 0;
   margin-right: 25px;
   font-size: 16px;
   font-style: normal;
-  font-weight: 600;
   line-height: 19px;
   letter-spacing: 0em;
   text-align: left;
   min-width: unset;
 }
 
-.css-1jg0vko-MuiTabs-indicator {
-  height: 3px;
-} */
+.MuiTab-root {
+  color: #4F4F4F;
+  font-weight: 400;
+}
+
+.MuiTab-root.Mui-selected {
+  color: #333333;
+  font-weight: 600;
+}
+
+.MuiChip-root {
+  height: 22px;
+}

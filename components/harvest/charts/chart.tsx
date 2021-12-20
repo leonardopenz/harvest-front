@@ -1,4 +1,4 @@
-import { useContext, useLayoutEffect, useRef } from "react";
+import { useContext, useEffect, useLayoutEffect, useRef } from "react";
 import { HarvestContext } from "..";
 import { ChartType, ReportTab } from "../../../interfaces/Report";
 
@@ -6,21 +6,41 @@ import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 import moment from "moment";
+import { Grid } from "@mui/material";
 am4core.useTheme(am4themes_animated);
+// import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
+// am4core.options.autoDispose = true;
+
+import style from '../../layout/layout.module.css';
 
 type ChartProps = {
     tab: ReportTab
-    type: ChartType
+    // type: ChartType
 }
 
-export default function Chart({ tab, type }: ChartProps) {
+export default function Chart({ tab }: ChartProps) {
     const dateFormat = "DD/MM/YYYY";
     const { item, filter, setFilter } = useContext(HarvestContext);
-    const chart = useRef({} as any);
-    const chartId = "chartdiv_" + ReportTab[tab] + "_" + ChartType[type];
+
+    const productionChartId = "chartdiv_" + ReportTab[tab] + "_" + ChartType.production;
+    const costChartId = "chartdiv_" + ReportTab[tab] + "_" + ChartType.cost;
+
+    const chartProduction = useRef({} as am4charts.PieChart);
+    const chartCost = useRef({} as am4charts.PieChart);
 
     useLayoutEffect(() => {
+        chartProduction.current = createChart(ChartType.production, productionChartId);
+        chartCost.current = createChart(ChartType.cost, costChartId);
+        return () => { chartProduction.current.dispose(); chartCost.current.dispose() };
+
+        console.log('useLayoutEffect ' + ReportTab[tab]);
+    }, []);
+
+    function createChart(type: ChartType, chartId: string) {
+        console.log('createChart');
+
         let x = am4core.create(chartId, am4charts.PieChart);
+        try { document?.querySelector(`#` + chartId + ` [d*=" M6,15"]`)?.parentElement?.parentElement?.remove(); } catch { }
         x.data = item.categories;
         x.radius = am4core.percent(90);
 
@@ -55,17 +75,49 @@ export default function Chart({ tab, type }: ChartProps) {
             tooltipDescription = `<span style="margin-right: 3px; color: #df1d00;">{` + ChartType[type] + `}</span><span>bins</span>`;
         }
 
-        var tooltipHTML = `<div style="text-align: left; font-weight: 600; padding: 15px;">
-            <div>` + moment(filter.start).format(dateFormat) + ` - ` + moment(filter.end).format(dateFormat) + `</div>
+        var tooltipHTML = `<div style="text-align: left; font-weight: 600; padding: 10px 8px;;">
+            <div style="margin-bottom: 5px;">`+ <CalendarTodayOutlinedIcon /> + moment(filter.start).format(dateFormat) + ` - ` + moment(filter.end).format(dateFormat) + `</div>
             <div><span style="margin-right: 5px; color: #df1d00;">{name}:</span>`+ tooltipDescription + `</div></div>`;
 
         pieSeries.slices.template.tooltipHTML = tooltipHTML;
-        chart.current = x;
 
-        // document.querySelector('[d*=" M6,15"]')?.remove();
+        if (type == ChartType.cost) {
+            x.legend = new am4charts.Legend();
+            x.legend.valueLabels.template.disabled = true;
+            x.legend.layout = "horizontal";
+            x.legend.contentAlign = "right";
+            x.legend.itemContainers.template.clickable = false;
+            x.legend.itemContainers.template.focusable = false;
+            x.legend.itemContainers.template.hoverable = false;
+            x.legend.itemContainers.template.cursorOverStyle = am4core.MouseCursorStyle.default;
 
-        return () => { x.dispose(); };
-    }, []);
+            var legendContainer = am4core.create("chartdiv_" + ReportTab[tab] + "_legend", am4core.Container);
+            legendContainer.width = am4core.percent(100);
+            legendContainer.height = am4core.percent(100);
+            x.legend.parent = legendContainer;
+        }
 
-    return (<div id={chartId} style={{ width: "100%", height: "300px" }}></div>)
+        return x;
+    }
+
+    return (
+        <Grid container spacing={2}>
+            <Grid item xs={12} md={12}>
+                <div id={"chartdiv_" + ReportTab[tab] + "_legend"} style={{ width: "100%", height: "50px" }}></div>
+            </Grid>
+            <Grid item xs={12} md={6}>
+                <div className={style.tab_content}>
+                    <div className={style.chart}>{<div id={productionChartId} style={{ width: "100%", height: "300px" }}></div>}</div>
+                    <div className={style.title}>Production</div>
+                    <div className={style.total}>TOTAL: {item.totalProduction} bins</div>
+                </div>
+            </Grid>
+            <Grid item xs={12} md={6}> 
+                <div className={style.tab_content}>
+                    <div className={style.chart}>{<div id={costChartId} style={{ width: "100%", height: "300px" }}></div>}</div>
+                    <div className={style.title}>Cost</div>
+                    <div className={style.total}>TOTAL: ${item.totalCost}</div>
+                </div>
+            </Grid>
+        </Grid>)
 }
