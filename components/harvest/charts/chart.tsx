@@ -76,7 +76,7 @@ export default function Chart({ tab }: ChartProps) {
         }
 
         var tooltipHTML = `<div style="text-align: left; font-weight: 600; padding: 10px 8px;;">
-            <div style="margin-bottom: 5px;">`+ <CalendarTodayOutlinedIcon /> + moment(filter.start).format(dateFormat) + ` - ` + moment(filter.end).format(dateFormat) + `</div>
+            <div style="margin-bottom: 5px;">` + moment(filter.start).format(dateFormat) + ` - ` + moment(filter.end).format(dateFormat) + `</div>
             <div><span style="margin-right: 5px; color: #df1d00;">{name}:</span>`+ tooltipDescription + `</div></div>`;
 
         pieSeries.slices.template.tooltipHTML = tooltipHTML;
@@ -112,7 +112,7 @@ export default function Chart({ tab }: ChartProps) {
                     <div className={style.total}>TOTAL: {item.totalProduction} bins</div>
                 </div>
             </Grid>
-            <Grid item xs={12} md={6}> 
+            <Grid item xs={12} md={6}>
                 <div className={style.tab_content}>
                     <div className={style.chart}>{<div id={costChartId} style={{ width: "100%", height: "300px" }}></div>}</div>
                     <div className={style.title}>Cost</div>
