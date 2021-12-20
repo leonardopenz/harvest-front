@@ -8,7 +8,7 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 import moment from "moment";
 import { Grid } from "@mui/material";
 am4core.useTheme(am4themes_animated);
-// import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
+import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
 // am4core.options.autoDispose = true;
 
 import style from '../../layout/layout.module.css';
@@ -76,7 +76,7 @@ export default function Chart({ tab }: ChartProps) {
         }
 
         var tooltipHTML = `<div style="text-align: left; font-weight: 600; padding: 10px 8px;;">
-            <div style="margin-bottom: 5px;">` + moment(filter.start).format(dateFormat) + ` - ` + moment(filter.end).format(dateFormat) + `</div>
+            <div style="margin-bottom: 5px;"><span style="margin-right: 5px;"><svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-ptiqhd-MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" aria-hidden="true" data-testid="CalendarTodayOutlinedIcon"><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V10h16v11zm0-13H4V5h16v3z"></path></svg></span><span>` + moment(filter.start).format(dateFormat) + ` - ` + moment(filter.end).format(dateFormat) + `</span></div>
             <div><span style="margin-right: 5px; color: #df1d00;">{name}:</span>`+ tooltipDescription + `</div></div>`;
 
         pieSeries.slices.template.tooltipHTML = tooltipHTML;
