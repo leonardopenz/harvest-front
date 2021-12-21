@@ -11,15 +11,13 @@ import { Grid, CircularProgress } from "@mui/material";
 am4core.useTheme(am4themes_animated);
 am4core.options.autoDispose = true;
 
-// import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
-
 type ChartProps = {
     tab: ReportTab
 }
 
 export default function Chart({ tab }: ChartProps) {
     const dateFormat = "DD/MM/YYYY";
-    const { item, filter, newChart } = useContext(HarvestContext);
+    const { item, filter, loading, newChart } = useContext(HarvestContext);
 
     const productionChartId = "chartdiv_" + ReportTab[tab] + "_" + ChartType.production;
     const costChartId = "chartdiv_" + ReportTab[tab] + "_" + ChartType.cost;
@@ -35,8 +33,6 @@ export default function Chart({ tab }: ChartProps) {
     }, [item]);
 
     function createChart(type: ChartType, chartId: string) {
-        // console.log('createChart()');
-
         let x = am4core.create(chartId, am4charts.PieChart);
         try { document?.querySelector(`#` + chartId + ` [d*=" M6,15"]`)?.parentElement?.parentElement?.remove(); } catch { }
         x.data = item.categories;
@@ -74,7 +70,6 @@ export default function Chart({ tab }: ChartProps) {
             tooltipDescription = `<span style="margin-right: 3px; color: #df1d00;">{` + ChartType[type] + `}</span><span>bins</span>`;
         }
 
-        //<span style="margin-right: 5px;"></span>
         var tooltipHTML = `<div style="text-align: left; font-weight: 600; padding: 10px 8px;;">
             <div style="margin-bottom: 5px;"><span>` + moment(filter.start).format(dateFormat) + ` - ` + moment(filter.end).format(dateFormat) + `</span></div>
             <div><span style="margin-right: 5px; color: #df1d00;">{name}:</span>`+ tooltipDescription + `</div></div>`;
@@ -102,49 +97,30 @@ export default function Chart({ tab }: ChartProps) {
     }
 
     return (
-        <Grid container spacing={2} style={{ marginBottom: "15px" }}>
-            <Grid item xs={12} md={12}>
-                <div id={"chartdiv_" + ReportTab[tab] + "_legend"} style={{ width: "100%", height: "70px" }}></div>
-            </Grid>
-            <Grid item xs={12} md={6}>
-                <div className={style.tab_content}>
-                    <div className={style.chart}>{<div id={productionChartId} style={{ width: "100%", height: "300px" }}></div>}</div>
-                    <div className={style.title}>Production</div>
-                    <div className={style.total}>TOTAL: {item.totalProduction} bins</div>
-                </div>
-            </Grid>
-            <Grid item xs={12} md={6}>
-                <div className={style.tab_content}>
-                    <div className={style.chart}>{<div id={costChartId} style={{ width: "100%", height: "300px" }}></div>}</div>
-                    <div className={style.title}>Cost</div>
-                    <div className={style.total}>TOTAL: ${item.totalCost}</div>
-                </div>
-            </Grid>
-        </Grid>
-        //loading ?
-        // <div style={{ marginTop: "40px", marginBottom: "40px", textAlign: 'center' }}><CircularProgress color="secondary" /></div>
-        // : (
-        //     item.categories?.length > 0 ?
-        //         <Grid container spacing={2} style={{ marginBottom: "15px" }}>
-        //             <Grid item xs={12} md={12}>
-        //                 <div id={"chartdiv_" + ReportTab[tab] + "_legend"} style={{ width: "100%", height: "70px" }}></div>
-        //             </Grid>
-        //             <Grid item xs={12} md={6}>
-        //                 <div className={style.tab_content}>
-        //                     <div className={style.chart}>{<div id={productionChartId} style={{ width: "100%", height: "300px" }}></div>}</div>
-        //                     <div className={style.title}>Production</div>
-        //                     <div className={style.total}>TOTAL: {item.totalProduction} bins</div>
-        //                 </div>
-        //             </Grid>
-        //             <Grid item xs={12} md={6}>
-        //                 <div className={style.tab_content}>
-        //                     <div className={style.chart}>{<div id={costChartId} style={{ width: "100%", height: "300px" }}></div>}</div>
-        //                     <div className={style.title}>Cost</div>
-        //                     <div className={style.total}>TOTAL: ${item.totalCost}</div>
-        //                 </div>
-        //             </Grid>
-        //         </Grid>
-        //         : <div style={{ marginTop: "40px", marginBottom: "40px", textAlign: 'center' }}>There is no data in the period</div>
-        //)
+        loading ?
+            <div style={{ marginTop: "40px", marginBottom: "40px", textAlign: 'center' }}><CircularProgress color="secondary" /></div>
+            : (
+                item.categories?.length > 0 ?
+                    <Grid container spacing={2} style={{ marginBottom: "30px" }}>
+                        <Grid item xs={12} md={12}>
+                            <div id={"chartdiv_" + ReportTab[tab] + "_legend"} style={{ width: "100%", height: "70px" }}></div>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <div className={style.tab_content}>
+                                <div className={style.chart}>{<div id={productionChartId} style={{ width: "100%", height: "300px" }}></div>}</div>
+                                <div className={style.title}>Production</div>
+                                <div className={style.total}>TOTAL: {item.totalProduction} bins</div>
+                            </div>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <div className={style.tab_content}>
+                                <div className={style.chart}>{<div id={costChartId} style={{ width: "100%", height: "300px" }}></div>}</div>
+                                <div className={style.title}>Cost</div>
+                                <div className={style.total}>TOTAL: ${item.totalCost}</div>
+                            </div>
+                        </Grid>
+                    </Grid>
+                    : <div style={{ marginTop: "40px", marginBottom: "40px", textAlign: 'center' }}>There is no data in the period</div>
+            )
     )
 }

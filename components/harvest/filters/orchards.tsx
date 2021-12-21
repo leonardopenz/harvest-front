@@ -7,13 +7,6 @@ import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { HarvestContext } from "..";
 import axios from 'axios';
-
-function sleep(delay = 0) {
-    return new Promise((resolve) => {
-        setTimeout(resolve, delay);
-    });
-}
-
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
@@ -37,12 +30,6 @@ export default function OrchardsFilter() {
             if (data && active)
                 setOptions(data)
         }).catch()
-
-        // (async () => {
-        //     await sleep(1e3); // For demo purposes.
-        //     if (active)
-        //         setOptions([...orchards]);
-        // })();
 
         return () => { active = false; };
     }, [loading]);
@@ -96,12 +83,3 @@ export default function OrchardsFilter() {
         />
     );
 }
-
-const orchards = [
-    { id: "1ba383ea-e9f0-4c35-8f01-ed88c7eeaf2a", name: "Taihape Woods 1" },
-    { id: "34a76a76-23c6-40dd-b8c7-b822063f17b1", name: "Wanaka Meadows" },
-    { id: "4eb58296-5eda-49a1-9831-5838e52bc4dd", name: "Taihape Woods 2" },
-    { id: "7ba12acf-95b3-4c8d-80ca-4c2b562971cc", name: "Gore's River" },
-    { id: "b6dbb181-48ff-4ff7-b395-7fa8dcc146c4", name: "Raglan's Haven" },
-    { id: "ef71e690-4bbb-4684-9ebb-4b8fcd23eceb", name: "Oamaru Hills" }
-];

@@ -1,9 +1,6 @@
 import dynamic from "next/dynamic";
 import axios from "axios"
-// import { Tabs } from '@mui/material';
-// import Tab from '@mui/material/Tab';
-import { Box } from "@mui/system";
-import { useEffect, useState, createContext, SetStateAction, useRef } from "react"
+import { useEffect, useState, createContext, SetStateAction } from "react"
 import Report from "../../interfaces/Report"
 import Panel from "../layout/panel";
 import HarvestFilters from './filters';
@@ -41,7 +38,7 @@ export const HarvestContext = createContext({} as HarvestContextData);
 export default function HarvestProvider() {
     const dateFormat = "YYYY-MM-DD";
     const [item, setItem] = useState<Report>({} as Report)
-    const [filter, setFilter] = useState<Filter>({ tab: '1', start: moment().subtract(4, 'months').format(dateFormat), end: moment().format(dateFormat) } as Filter);
+    const [filter, setFilter] = useState<Filter>({ tab: '1', start: moment().subtract(5, 'months').format(dateFormat), end: moment().format(dateFormat) } as Filter);
     const [loading, setLoading] = useState<boolean>(true);
     const [newChart, setNewChart] = useState<boolean>(false);
 
