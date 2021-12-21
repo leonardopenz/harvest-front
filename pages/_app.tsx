@@ -1,5 +1,4 @@
 import '../styles/globals.css'
-import AppProps from 'next/app'
 import Header from '../components/layout/header'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 
@@ -14,7 +13,7 @@ const theme = createTheme({
   },
 });
 
-function HarvestApp({ Component, pageProps }: AppProps) {
+function HarvestApp({ Component, pageProps }: any) {
   return (
     <ThemeProvider theme={theme}>
       <Header />
