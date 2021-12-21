@@ -50,7 +50,9 @@ export default function HarvestProvider() {
             if (data.success) {
                 setNewChart(true);
                 setItem(data.resource);
-            }
+            } else
+                window.alert("Unable to load data");
+
         }).catch(e => { setLoading(false) });
     }, [filter])
 

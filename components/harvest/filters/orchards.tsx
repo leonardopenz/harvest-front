@@ -29,7 +29,8 @@ export default function OrchardsFilter() {
         axios.get('/api/orchard').then(({ data }) => {
             if (data && data.success && active)
                 setOptions(data.resource)
-        }).catch()
+                
+        }).catch(e => { window.alert("error"); })
 
         return () => { active = false; };
     }, [loading]);
