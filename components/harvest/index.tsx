@@ -47,8 +47,10 @@ export default function HarvestProvider() {
         let orchards = filter.orchards?.length > 0 ? filter.orchards.join(",") : '';
         axios.get('/api/harvest', { params: { start: filter.start, end: filter.end, tab: filter.tab, orchards } }).then(({ data }) => {
             setLoading(false);
-            setNewChart(true);
-            setItem(data);
+            if (data.success) {
+                setNewChart(true);
+                setItem(data.resource);
+            }
         }).catch(e => { setLoading(false) });
     }, [filter])
 

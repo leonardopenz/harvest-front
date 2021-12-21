@@ -27,8 +27,8 @@ export default function OrchardsFilter() {
             return undefined;
 
         axios.get('/api/orchard').then(({ data }) => {
-            if (data && active)
-                setOptions(data)
+            if (data && data.success && active)
+                setOptions(data.resource)
         }).catch()
 
         return () => { active = false; };
