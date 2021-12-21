@@ -23,30 +23,30 @@ a {
 }
 
 .MuiTabs-indicator {
-  height: 3px;
+  height: 3px !important;
 }
 
 .MuiTab-root {
-  padding: 9px 0;
-  margin-right: 25px;
-  font-size: 16px;
-  font-style: normal;
-  line-height: 19px;
-  letter-spacing: 0em;
-  text-align: left;
-  min-width: unset;
+  padding: 9px 0 !important;
+  margin-right: 25px !important;
+  font-size: 16px !important;
+  font-style: normal !important;
+  line-height: 19px !important;
+  letter-spacing: 0em !important;
+  text-align: left !important;
+  min-width: unset !important;
 }
 
 .MuiTab-root {
-  color: #4F4F4F;
-  font-weight: 400;
+  color: #4F4F4F !important;
+  font-weight: 400 !important;
 }
 
 .MuiTab-root.Mui-selected {
-  color: #333333;
-  font-weight: 600;
+  color: #333333 !important;
+  font-weight: 600 !important;
 }
 
 .MuiChip-root {
-  height: 22px;
+  height: 22px !important;
 }

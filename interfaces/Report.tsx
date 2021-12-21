@@ -12,7 +12,7 @@ type ReportCategorie = {
     cost: number
 }
 
-export enum ReportTab { varieties = 0, orchards = 1 }
+export enum ReportTab { varieties = 1, orchards = 2 }
 export enum ChartType { production = 0, cost = 1 }
 
 export default Report;

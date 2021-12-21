@@ -6,6 +6,7 @@ import { Checkbox } from '@mui/material';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { HarvestContext } from "..";
+import axios from 'axios';
 
 function sleep(delay = 0) {
     return new Promise((resolve) => {
@@ -29,16 +30,15 @@ export default function OrchardsFilter() {
 
     useEffect(() => {
         let active = true;
-
         if (!loading)
             return undefined;
 
-        (async () => {
-            // axios.get('localhost:5001/api/orchard').then(({ data }) => {
-            //     if (data && active)
-            //         setOptions(data.result)
-            // }).catch()
+        // axios.get('http://52.67.110.114/api/orchard').then(({ data }) => {
+        //     if (data && active)
+        //         setOptions(data)
+        // }).catch()
 
+        (async () => {
             await sleep(1e3); // For demo purposes.
             if (active)
                 setOptions([...orchards]);
@@ -97,7 +97,6 @@ export default function OrchardsFilter() {
     );
 }
 
-// Top films as rated by IMDb users. http://www.imdb.com/chart/top
 const orchards = [
     { id: "1ba383ea-e9f0-4c35-8f01-ed88c7eeaf2a", name: "Taihape Woods 1" },
     { id: "34a76a76-23c6-40dd-b8c7-b822063f17b1", name: "Wanaka Meadows" },

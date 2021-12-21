@@ -4,7 +4,7 @@ function Header() {
     return <div className={style.header}>
         <div className={style.content}>
             <div className={style.image}>
-                <img src="/logo.png" alt="Hectre Logo" />
+                <a href="https://hectre.com/" target="_blank"><img src="/logo.png" alt="Hectre Logo" /></a>
             </div>
         </div>
     </div>;

@@ -8,9 +8,8 @@ import { HarvestContext } from "..";
 import moment from 'moment';
 
 export default function PeriodFilter() {
-    const dateFormat = "YYYY-MM-DDT00:00Z";
+    const dateFormat = "YYYY-MM-DD";
     const { item, filter, setFilter } = useContext(HarvestContext);
-    // const [value, setValue] = useState<DateRange<string>>([moment().subtract(1, 'months').format(dateFormat), moment().format(dateFormat)]);
     const [value, setValue] = useState<DateRange<string>>([filter.start, filter.end]);
 
     return (
@@ -19,9 +18,10 @@ export default function PeriodFilter() {
                 <DateRangePicker
                     startText="Start"
                     endText="End"
+                    inputFormat="dd/MM/yyyy"
                     value={value}
                     onChange={(newValue) => { setValue(newValue); }}
-                    onAccept={(e) => { setFilter(prevstate => ({ ...prevstate, start: moment(e[0]).format(dateFormat), end: moment(e[1]).format(dateFormat) })) }}
+                    onAccept={(e) => { setFilter(prevstate => ({ ...prevstate, start: moment(e[0]).format(dateFormat), end: moment(e[1]).format(dateFormat), tab: filter.tab })) }}
                     disableCloseOnSelect={false}
                     renderInput={(startProps, endProps) => (
                         <>

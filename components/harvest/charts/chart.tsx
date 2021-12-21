@@ -9,18 +9,16 @@ import moment from "moment";
 import { Grid } from "@mui/material";
 am4core.useTheme(am4themes_animated);
 import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
-// am4core.options.autoDispose = true;
 
 import style from '../../layout/layout.module.css';
 
 type ChartProps = {
     tab: ReportTab
-    // type: ChartType
 }
 
 export default function Chart({ tab }: ChartProps) {
     const dateFormat = "DD/MM/YYYY";
-    const { item, filter, setFilter } = useContext(HarvestContext);
+    const { item, filter } = useContext(HarvestContext);
 
     const productionChartId = "chartdiv_" + ReportTab[tab] + "_" + ChartType.production;
     const costChartId = "chartdiv_" + ReportTab[tab] + "_" + ChartType.cost;
@@ -32,9 +30,7 @@ export default function Chart({ tab }: ChartProps) {
         chartProduction.current = createChart(ChartType.production, productionChartId);
         chartCost.current = createChart(ChartType.cost, costChartId);
         return () => { chartProduction.current.dispose(); chartCost.current.dispose() };
-
-        console.log('useLayoutEffect ' + ReportTab[tab]);
-    }, []);
+    }, [filter]);
 
     function createChart(type: ChartType, chartId: string) {
         console.log('createChart');
@@ -65,6 +61,7 @@ export default function Chart({ tab }: ChartProps) {
         pieSeries.hiddenState.properties.opacity = 1;
         pieSeries.hiddenState.properties.endAngle = -90;
         pieSeries.hiddenState.properties.startAngle = -90;
+        pieSeries.showOnInit = false;
 
         var tooltipDescription = "";
         if (type == ChartType.cost) {
@@ -75,8 +72,9 @@ export default function Chart({ tab }: ChartProps) {
             tooltipDescription = `<span style="margin-right: 3px; color: #df1d00;">{` + ChartType[type] + `}</span><span>bins</span>`;
         }
 
+        //<span style="margin-right: 5px;"></span>
         var tooltipHTML = `<div style="text-align: left; font-weight: 600; padding: 10px 8px;;">
-            <div style="margin-bottom: 5px;"><span style="margin-right: 5px;"><svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-ptiqhd-MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" aria-hidden="true" data-testid="CalendarTodayOutlinedIcon"><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V10h16v11zm0-13H4V5h16v3z"></path></svg></span><span>` + moment(filter.start).format(dateFormat) + ` - ` + moment(filter.end).format(dateFormat) + `</span></div>
+            <div style="margin-bottom: 5px;"><span>` + moment(filter.start).format(dateFormat) + ` - ` + moment(filter.end).format(dateFormat) + `</span></div>
             <div><span style="margin-right: 5px; color: #df1d00;">{name}:</span>`+ tooltipDescription + `</div></div>`;
 
         pieSeries.slices.template.tooltipHTML = tooltipHTML;

@@ -42,10 +42,10 @@ interface TabPanelProps {
 export const HarvestContext = createContext({} as HarvestContextData);
 
 export default function HarvestProvider() {
-    const dateFormat = "YYYY-MM-DDT00:00Z";
+    const dateFormat = "YYYY-MM-DD";
     const [loading, setLoading] = useState<boolean>(false);
     const [item, setItem] = useState<Report>({} as Report)
-    const [filter, setFilter] = useState<Filter>({ tab: '0', start: moment().subtract(1, 'months').format(dateFormat), end: moment().format(dateFormat) } as Filter);
+    const [filter, setFilter] = useState<Filter>({ tab: '1', start: moment().subtract(1, 'months').format(dateFormat), end: moment().format(dateFormat) } as Filter);
 
     useEffect(() => {
         setItem({
@@ -92,12 +92,12 @@ export default function HarvestProvider() {
         });
     }, [filter])
 
-    // useEffect(() => { console.log("filter", filter) }, [filter])
+    useEffect(() => { getReport() }, [filter])
 
     function getReport() {
         setLoading(true)
-        let orchards = filter.orchards?.join(',') || '';
-        axios.get('localhost:5001/api/orchard', { params: { start: filter.start, end: filter.end, tab: filter.tab, orchards } }).then(({ data }) => {
+        let orchards = filter.orchards?.length > 0 ? "'" + filter.orchards.join("','") + "'" : '';
+        axios.get('http://52.67.110.114/api/harvest', { params: { start: filter.start, end: filter.end, tab: filter.tab, orchards } }).then(({ data }) => {
             setLoading(false);
             setItem(data);
         }).catch(e => { setLoading(false) });
@@ -115,28 +115,12 @@ export default function HarvestProvider() {
                         indicatorColor="secondary"
                         onChange={(e, newValue) => setFilter(prevstate => ({ ...prevstate, tab: newValue }))}
                     >
-                        <Tab label="Varieties" value="0" />
-                        <Tab label="Orchards" value="1" />
+                        <Tab label="Varieties" value="1" />
+                        <Tab label="Orchards" value="2" />
                     </TabList>
-                    <TabPanel value={'0'}><Chart tab={ReportTab.varieties} /></TabPanel>
-                    <TabPanel value={'1'}><Chart tab={ReportTab.orchards} /></TabPanel>
+                    <TabPanel value={'1'}><Chart tab={ReportTab.varieties} /></TabPanel>
+                    <TabPanel value={'2'}><Chart tab={ReportTab.orchards} /></TabPanel>
                 </TabContext>
-
-                {/* <Tabs
-                    value={filter.tab}
-                    onChange={(e, newValue) => setFilter(prevstate => ({ ...prevstate, tab: newValue }))}
-                    textColor="primary"
-                    indicatorColor="secondary"
-                >
-                    <Tab label="Varieties" />
-                    <Tab label="Orchards" />
-                </Tabs>
-                <TabPanel value={filter.tab} index={0}>
-                    <Chart tab={ReportTab.varieties} />
-                </TabPanel>
-                <TabPanel value={filter.tab} index={1}>
-                    <Chart tab={ReportTab.orchards} />
-                </TabPanel> */}
             </Panel>
         </HarvestContext.Provider>
     )
