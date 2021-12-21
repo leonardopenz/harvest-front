@@ -60,6 +60,7 @@ export default function Chart({ tab }: ChartProps) {
         pieSeries.hiddenState.properties.endAngle = -90;
         pieSeries.hiddenState.properties.startAngle = -90;
         pieSeries.showOnInit = false;
+        x.numberFormatter.numberFormat = "#,###.##";
 
         var tooltipDescription = "";
         if (type == ChartType.cost) {
@@ -79,8 +80,11 @@ export default function Chart({ tab }: ChartProps) {
         if (type == ChartType.cost) {
             x.legend = new am4charts.Legend();
             x.legend.valueLabels.template.disabled = true;
-            x.legend.layout = "horizontal";
-            x.legend.contentAlign = "right";
+
+            if (window.screen.width > 1000) {
+                x.legend.layout = "horizontal";
+                x.legend.contentAlign = "right";
+            }
             x.legend.itemContainers.template.clickable = false;
             x.legend.itemContainers.template.focusable = false;
             x.legend.itemContainers.template.hoverable = false;

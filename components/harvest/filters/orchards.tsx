@@ -44,7 +44,7 @@ export default function OrchardsFilter() {
             id="orchards"
             multiple
             limitTags={1}
-            sx={{ width: 300 }}
+            // sx={{ width: 300 }}
             open={open}
             onOpen={() => { setOpen(true); }}
             onClose={() => { setOpen(false); }}
