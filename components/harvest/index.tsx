@@ -88,8 +88,8 @@ export default function HarvestProvider() {
     // }, [filter])
 
     useEffect(() => {
-        setLoading(true)
-        let orchards = filter.orchards.join(",");
+        setLoading(true);
+        let orchards = filter.orchards?.length > 0 ? filter.orchards.join(",") : '';
         axios.get('http://52.67.110.114/api/harvest', { params: { start: filter.start, end: filter.end, tab: filter.tab, orchards } }).then(({ data }) => {
             setLoading(false);
             setItem(data);
