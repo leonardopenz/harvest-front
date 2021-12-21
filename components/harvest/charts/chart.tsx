@@ -85,6 +85,13 @@ export default function Chart({ tab }: ChartProps) {
             x.legend.itemContainers.template.focusable = false;
             x.legend.itemContainers.template.hoverable = false;
             x.legend.itemContainers.template.cursorOverStyle = am4core.MouseCursorStyle.default;
+            x.legend.labels.template.fill = am4core.color("#4f4f4f");
+            x.legend.labels.template.fontSize = '16';
+            x.legend.markers.template.height = 10;
+            x.legend.markers.template.width = 30;
+
+            let marker = x.legend.markers.template.children.getIndex(0);
+            (marker || {} as any).cornerRadius(0, 0, 0, 0);
 
             var legendContainer = am4core.create("chartdiv_" + ReportTab[tab] + "_legend", am4core.Container);
             legendContainer.width = am4core.percent(100);
