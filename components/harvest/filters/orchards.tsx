@@ -33,16 +33,16 @@ export default function OrchardsFilter() {
         if (!loading)
             return undefined;
 
-        // axios.get('http://52.67.110.114/api/orchard').then(({ data }) => {
-        //     if (data && active)
-        //         setOptions(data)
-        // }).catch()
+        axios.get('/api/orchard').then(({ data }) => {
+            if (data && active)
+                setOptions(data)
+        }).catch()
 
-        (async () => {
-            await sleep(1e3); // For demo purposes.
-            if (active)
-                setOptions([...orchards]);
-        })();
+        // (async () => {
+        //     await sleep(1e3); // For demo purposes.
+        //     if (active)
+        //         setOptions([...orchards]);
+        // })();
 
         return () => { active = false; };
     }, [loading]);
