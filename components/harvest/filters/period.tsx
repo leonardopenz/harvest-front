@@ -10,7 +10,7 @@ import moment from 'moment';
 export default function PeriodFilter() {
     const dateFormat = "YYYY-MM-DD";
     const { item, filter, setFilter } = useContext(HarvestContext);
-    const [value, setValue] = useState<DateRange<string>>([filter.start, filter.end]);
+    const [value, setValue] = useState<DateRange<string>>([moment(filter.start).add(1, 'days').format(dateFormat), moment(filter.end).add(1, 'days').format(dateFormat)]);
 
     return (
         <>
