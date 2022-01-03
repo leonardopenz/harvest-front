@@ -4,7 +4,7 @@ export default async function index(req, res) {
     const endpoint = req.query.endpoint;
     req.query['endpoint'] = undefined;
     axios({
-        baseURL: "http://52.67.110.114",
+        baseURL: "http://54.232.55.126",
         url: "/api/" + endpoint,
         params: req.query,
         method: req.method,
